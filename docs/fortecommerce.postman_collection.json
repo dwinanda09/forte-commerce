@@ -1,0 +1,723 @@
+{
+  "info": {
+    "name": "ForteCommerce API",
+    "description": "ForteCommerce API Collection - Go/Echo Backend\n\nBase URL: http://localhost:8080/api/v1\n\nAuthentication: Bearer Token (set automatically after login)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "fortecommerce-api-v1",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "description": "Authentication endpoints",
+      "item": [
+        {
+          "name": "Login (Buyer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "    console.log('Token saved:', json.data.token.substring(0, 20) + '...');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"buyer1\", \"password\": \"password123\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "description": "Login as buyer. Token is automatically saved to collection variables."
+        },
+        {
+          "name": "Login (Seller)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.token) {",
+                  "    pm.collectionVariables.set('token', json.data.token);",
+                  "    console.log('Token saved:', json.data.token.substring(0, 20) + '...');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"username\": \"seller1\", \"password\": \"password123\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "description": "Login as seller. Token is automatically saved to collection variables."
+        }
+      ]
+    },
+    {
+      "name": "📦 Products (Public)",
+      "description": "Public product endpoints",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "description": "List all available products with inventory info. Requires authentication."
+        }
+      ]
+    },
+    {
+      "name": "🏪 Seller — Products",
+      "description": "Seller-only product management endpoints",
+      "item": [
+        {
+          "name": "Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('product_id', json.data.id);",
+                  "    console.log('Product ID saved:', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"sku\": \"SKU-001\", \"name\": \"Premium Widget\", \"price\": 99.99, \"inventory_qty\": 100}"
+            },
+            "url": {
+              "raw": "{{base_url}}/seller/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "products"
+              ]
+            }
+          },
+          "description": "Create a new product. Seller-only. Product ID is saved to collection variables."
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Premium Widget Pro\", \"price\": 149.99, \"inventory_qty\": 150}"
+            },
+            "url": {
+              "raw": "{{base_url}}/seller/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "description": "Update an existing product. Requires product_id to be set."
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/seller/products/{{product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "description": "Delete a product. Seller-only. Requires product_id to be set."
+        }
+      ]
+    },
+    {
+      "name": "🛒 Checkout",
+      "description": "Checkout and order processing",
+      "item": [
+        {
+          "name": "Submit Checkout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.checkout_id) {",
+                  "    pm.collectionVariables.set('checkout_id', json.data.checkout_id);",
+                  "    console.log('Checkout ID saved:', json.data.checkout_id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"items\": [\"SKU-001\", \"SKU-001\", \"SKU-002\"]}"
+            },
+            "url": {
+              "raw": "{{base_url}}/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "checkout"
+              ]
+            }
+          },
+          "description": "Async checkout. Publishes job to RabbitMQ. Returns 202 with checkout_id. Poll the Get Session endpoint until status=completed."
+        },
+        {
+          "name": "Get Checkout Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/checkout/{{checkout_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "checkout",
+                "{{checkout_id}}"
+              ]
+            }
+          },
+          "description": "Poll this endpoint after Submit Checkout. Status transitions: pending → completed/failed/expired. Requires checkout_id to be set."
+        },
+        {
+          "name": "Confirm Checkout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('order_id', json.data.id);",
+                  "    console.log('Order ID saved:', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/checkout/{{checkout_id}}/confirm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "checkout",
+                "{{checkout_id}}",
+                "confirm"
+              ]
+            }
+          },
+          "description": "Only call this when session status=completed. Creates the order and decrements inventory. Requires checkout_id to be set."
+        }
+      ]
+    },
+    {
+      "name": "💳 Orders",
+      "description": "Order management and payment",
+      "item": [
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            }
+          },
+          "description": "List all orders for the authenticated user."
+        },
+        {
+          "name": "Get Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            }
+          },
+          "description": "Get details of a specific order. Requires order_id to be set."
+        },
+        {
+          "name": "Pay Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}/pay",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "{{order_id}}",
+                "pay"
+              ]
+            }
+          },
+          "description": "Mark order as paid. Final state. Requires order_id to be set."
+        },
+        {
+          "name": "Cancel Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "{{order_id}}",
+                "cancel"
+              ]
+            }
+          },
+          "description": "Cancel order. Restores product inventory. Requires order_id to be set."
+        }
+      ]
+    },
+    {
+      "name": "🎯 Campaigns (Public)",
+      "description": "Public campaign listing",
+      "item": [
+        {
+          "name": "List Campaigns",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/campaigns",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "campaigns"
+              ]
+            }
+          },
+          "description": "List all active campaigns. Requires authentication."
+        }
+      ]
+    },
+    {
+      "name": "🏪 Seller — Campaigns",
+      "description": "Seller-only campaign management",
+      "item": [
+        {
+          "name": "List Campaigns (Seller)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns"
+              ]
+            }
+          },
+          "description": "List all campaigns for the authenticated seller."
+        },
+        {
+          "name": "Get Campaign",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns/{{campaign_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns",
+                "{{campaign_id}}"
+              ]
+            }
+          },
+          "description": "Get details of a specific campaign. Requires campaign_id to be set."
+        },
+        {
+          "name": "Create Campaign — Buy N Get M",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.success && json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('campaign_id', json.data.id);",
+                  "    console.log('Campaign ID saved:', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Buy 3 Pay 2\", \"description\": \"Buy 3 of SKU-001, pay for only 2\", \"is_active\": true, \"priority\": 10, \"conditions\": [{\"type\": \"item_qty_gte\", \"sku\": \"SKU-001\", \"qty\": 3}], \"actions\": [{\"type\": \"buy_n_get_m\", \"sku\": \"SKU-001\", \"buy_n\": 3, \"pay_m\": 2}]}"
+            },
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns"
+              ]
+            }
+          },
+          "description": "Create a Buy N Get M campaign. Campaign ID is saved to collection variables."
+        },
+        {
+          "name": "Create Campaign — Percentage Discount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"10% Off Cart\", \"description\": \"10% discount when cart total >= 500\", \"is_active\": true, \"priority\": 5, \"conditions\": [{\"type\": \"cart_total_gte\", \"amount\": 500}], \"actions\": [{\"type\": \"pct_discount_on_cart\", \"pct\": 10}]}"
+            },
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns"
+              ]
+            }
+          },
+          "description": "Create a percentage discount campaign when cart total exceeds a threshold."
+        },
+        {
+          "name": "Create Campaign — Free Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Free Gift with Purchase\", \"description\": \"Buy SKU-001, get SKU-GIFT free\", \"is_active\": true, \"priority\": 8, \"conditions\": [{\"type\": \"cart_has_sku\", \"sku\": \"SKU-001\", \"min_qty\": 1}], \"actions\": [{\"type\": \"free_item\", \"trigger_sku\": \"SKU-001\", \"sku\": \"SKU-GIFT\"}]}"
+            },
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns"
+              ]
+            }
+          },
+          "description": "Create a free item campaign that adds a free product when conditions are met."
+        },
+        {
+          "name": "Update Campaign",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Buy 3 Pay 2 (Updated)\", \"priority\": 15}"
+            },
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns/{{campaign_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns",
+                "{{campaign_id}}"
+              ]
+            }
+          },
+          "description": "Update an existing campaign. Requires campaign_id to be set."
+        },
+        {
+          "name": "Toggle Campaign Active",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"active\": false}"
+            },
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns/{{campaign_id}}/toggle",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns",
+                "{{campaign_id}}",
+                "toggle"
+              ]
+            }
+          },
+          "description": "Toggle a campaign's active status. Requires campaign_id to be set."
+        },
+        {
+          "name": "Delete Campaign",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/seller/campaigns/{{campaign_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "seller",
+                "campaigns",
+                "{{campaign_id}}"
+              ]
+            }
+          },
+          "description": "Delete a campaign. Seller-only. Requires campaign_id to be set."
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string",
+      "description": "Base URL for ForteCommerce API"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "JWT Bearer token (auto-set after login)"
+    },
+    {
+      "key": "checkout_id",
+      "value": "",
+      "type": "string",
+      "description": "Checkout session ID (auto-set after Submit Checkout)"
+    },
+    {
+      "key": "order_id",
+      "value": "",
+      "type": "string",
+      "description": "Order ID (auto-set after Confirm Checkout)"
+    },
+    {
+      "key": "product_id",
+      "value": "",
+      "type": "string",
+      "description": "Product ID (auto-set after Create Product)"
+    },
+    {
+      "key": "campaign_id",
+      "value": "",
+      "type": "string",
+      "description": "Campaign ID (auto-set after Create Campaign)"
+    }
+  ]
+}

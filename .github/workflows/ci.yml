@@ -1,0 +1,195 @@
+name: CI
+
+# TBD: every commit to main must pass. PRs must pass before merge.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-flight runs for the same PR; never cancel main pushes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+
+  # ── Fast gates ─────────────────────────────────────────────────────────────
+  # No services, no infra. Fail here first before wasting runner minutes.
+
+  lint-backend:
+    name: Lint · Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: backend/go.sum
+
+      - name: Verify dependencies
+        working-directory: backend
+        run: go mod verify
+
+      - name: go vet
+        working-directory: backend
+        run: go vet ./...
+
+      - name: Compile check
+        working-directory: backend
+        run: go build ./...
+
+  lint-frontend:
+    name: Lint · Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Type check
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+  # ── Test & Build ────────────────────────────────────────────────────────────
+  # Run only after their respective lint gate passes.
+
+  test-backend:
+    name: Test · Backend
+    runs-on: ubuntu-latest
+    needs: lint-backend
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: forte_commerce_test
+          POSTGRES_USER: forte
+          POSTGRES_PASSWORD: forte123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      rabbitmq:
+        image: rabbitmq:3-alpine
+        ports:
+          - 5672:5672
+        options: >-
+          --health-cmd "rabbitmq-diagnostics ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: forte
+      DB_PASSWORD: forte123
+      DB_NAME: forte_commerce_test
+      DB_URL: postgres://forte:forte123@localhost:5432/forte_commerce_test?sslmode=disable
+      RABBITMQ_URL: amqp://guest:guest@localhost:5672/
+      JWT_SECRET: test-secret-ci-only
+      PORT: 8080
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: backend/go.sum
+
+      - name: Download dependencies
+        working-directory: backend
+        run: go mod download
+
+      - name: Install goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
+
+      - name: Run migrations
+        working-directory: backend
+        run: goose -dir migrations postgres "$DB_URL" up
+
+      - name: Test with race detector
+        working-directory: backend
+        run: go test -race ./... -count=1 -coverprofile=coverage.out -covermode=atomic
+
+      - name: Enforce coverage ≥ 80%
+        working-directory: backend
+        run: |
+          COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | sed 's/%//')
+          echo "Coverage: ${COVERAGE}%"
+          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
+            echo "FAIL: ${COVERAGE}% is below the required 80%"
+            go tool cover -func=coverage.out
+            exit 1
+          fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: backend/coverage.out
+
+  build-frontend:
+    name: Build · Frontend
+    runs-on: ubuntu-latest
+    needs: lint-frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Production build
+        working-directory: frontend
+        env:
+          BACKEND_URL: http://localhost:8080
+        run: npm run build
+
+  # ── Trunk gate ──────────────────────────────────────────────────────────────
+  # Single required status check. Branch protection should require THIS job.
+  # If any upstream job failed or was skipped, the trunk is not green.
+
+  ci-green:
+    name: CI Green
+    runs-on: ubuntu-latest
+    needs: [test-backend, build-frontend]
+    if: always()
+    steps:
+      - name: All checks passed?
+        run: |
+          backend="${{ needs.test-backend.result }}"
+          frontend="${{ needs.build-frontend.result }}"
+          echo "test-backend:   $backend"
+          echo "build-frontend: $frontend"
+          if [[ "$backend" != "success" || "$frontend" != "success" ]]; then
+            echo "FAIL: trunk gate not met — fix before merging to main"
+            exit 1
+          fi
+          echo "OK: trunk is green"

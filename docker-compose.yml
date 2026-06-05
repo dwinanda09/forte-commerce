@@ -1,0 +1,89 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: forte_postgres
+    environment:
+      POSTGRES_DB: forte_commerce
+      POSTGRES_USER: forte
+      POSTGRES_PASSWORD: forte123
+      PGPORT: "14045"
+    ports:
+      - "14045:14045"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forte -p 14045"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - forte-net
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: forte_rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_NODE_PORT: "14046"
+      RABBITMQ_MANAGEMENT_TCP_PORT: "14047"
+    ports:
+      - "14046:14046"
+      - "14047:14047"
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - forte-net
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: forte_backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "14045"
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:14046/
+    ports:
+      - "8080:8080"
+    networks:
+      - forte-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: forte_frontend
+    depends_on:
+      - backend
+    environment:
+      BACKEND_URL: http://backend:8080
+    ports:
+      - "3000:3000"
+    networks:
+      - forte-net
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  rabbitmqdata:
+
+networks:
+  forte-net:
+    driver: bridge

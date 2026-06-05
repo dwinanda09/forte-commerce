@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForteCommerce API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
+    <style>
+      /* Force light mode — prevent OS dark-mode from bleeding into Swagger UI */
+      :root {
+        color-scheme: light;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: #F8FAFB;
+        color: #5A5A5A;
+      }
+
+      /* ── Custom header ────────────────────────────────────────────────── */
+      .custom-header {
+        background: #01796F;
+        color: white;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.10);
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .header-icon {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1;
+      }
+
+      .header-text h1 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        margin-bottom: 4px;
+        letter-spacing: -0.4px;
+        color: #fff;
+      }
+
+      .header-text p {
+        font-size: 0.9rem;
+        opacity: 0.85;
+        margin: 0;
+        color: #fff;
+      }
+
+      .header-version {
+        margin-left: auto;
+        text-align: right;
+        font-size: 0.875rem;
+        color: rgba(255,255,255,0.75);
+      }
+
+      .header-version strong {
+        display: block;
+        font-size: 1.05rem;
+        color: #fff;
+        margin-top: 2px;
+      }
+
+      /* ── Swagger UI overrides — light palette ─────────────────────────── */
+      .swagger-ui {
+        max-width: 100%;
+        background: #F8FAFB;
+      }
+
+      .swagger-ui .topbar {
+        background: #fff;
+        padding: 10px 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      }
+
+      .swagger-ui .topbar .topbar-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .swagger-ui .info .title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #5A5A5A;
+      }
+
+      .swagger-ui .info .description {
+        color: #5A5A5A;
+        line-height: 1.6;
+      }
+
+      .swagger-ui .scheme-container {
+        background: #fff;
+        padding: 24px;
+        border-radius: 8px;
+        margin: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      }
+
+      .swagger-ui .btn {
+        border-radius: 4px;
+        font-weight: 500;
+        transition: background 0.15s, opacity 0.15s;
+      }
+
+      .swagger-ui .btn.authorize {
+        background-color: #01796F;
+        border-color: #01796F;
+        color: #fff;
+      }
+
+      .swagger-ui .btn.authorize:hover {
+        background-color: #015f58;
+        border-color: #015f58;
+      }
+
+      .swagger-ui .btn.execute {
+        background-color: #01796F;
+        border-color: #01796F;
+      }
+
+      .swagger-ui .btn.execute:hover {
+        background-color: #015f58;
+      }
+
+      /* Operation blocks */
+      .swagger-ui .opblock {
+        border-radius: 6px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+        background: #fff;
+        transition: box-shadow 0.2s ease;
+      }
+
+      .swagger-ui .opblock:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      }
+
+      .swagger-ui .opblock.opblock-get {
+        border-left: 4px solid #61affe;
+      }
+
+      .swagger-ui .opblock.opblock-post {
+        border-left: 4px solid #49cc90;
+      }
+
+      .swagger-ui .opblock.opblock-put {
+        border-left: 4px solid #fca130;
+      }
+
+      .swagger-ui .opblock.opblock-patch {
+        border-left: 4px solid #50e3c2;
+      }
+
+      .swagger-ui .opblock.opblock-delete {
+        border-left: 4px solid #f94c46;
+      }
+
+      .swagger-ui .opblock-summary {
+        padding: 12px 16px;
+        cursor: pointer;
+      }
+
+      .swagger-ui .opblock-summary-method {
+        font-weight: 600;
+        min-width: 80px;
+        padding: 4px 12px;
+        border-radius: 3px;
+        text-align: center;
+        margin-right: 12px;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+      }
+
+      .swagger-ui .opblock-summary-path {
+        font-family: 'Monaco', 'Courier', monospace;
+        font-size: 0.9rem;
+        padding: 0 12px;
+        flex: 1;
+        color: #5A5A5A;
+      }
+
+      /* Models / Schemas */
+      .swagger-ui .model-box,
+      .swagger-ui section.models,
+      .swagger-ui section.models .model-container {
+        background: #fff;
+        border-color: #B0C4DE;
+        color: #5A5A5A;
+      }
+
+      .swagger-ui .model {
+        background: #F8FAFB;
+        border: 1px solid #B0C4DE;
+        border-radius: 4px;
+        padding: 12px;
+        margin: 6px 0;
+        color: #5A5A5A;
+      }
+
+      .swagger-ui .model-box {
+        background: #fff;
+        border: 1px solid #B0C4DE;
+        border-radius: 4px;
+        padding: 12px;
+        color: #5A5A5A;
+      }
+
+      .swagger-ui section.models .model-box {
+        background: #fff;
+      }
+
+      .swagger-ui section.models h4,
+      .swagger-ui .model-title {
+        color: #5A5A5A;
+      }
+
+      /* Tabs */
+      .swagger-ui .tabitem {
+        color: #6D8196;
+      }
+
+      .swagger-ui .tabitem.active {
+        color: #01796F;
+        border-bottom: 2px solid #01796F;
+        font-weight: 600;
+      }
+
+      /* Response columns */
+      .swagger-ui .response-col-status {
+        font-weight: 600;
+        color: #5A5A5A;
+      }
+
+      .swagger-ui .response-col-description {
+        color: #6D8196;
+      }
+
+      .swagger-ui .responses-inner {
+        background: #fff;
+        padding: 20px;
+      }
+
+      .swagger-ui textarea {
+        font-family: 'Monaco', 'Courier', monospace;
+        font-size: 12px;
+        border: 1px solid #B0C4DE;
+        border-radius: 4px;
+        padding: 12px;
+        background: #F8FAFB;
+        color: #5A5A5A;
+      }
+
+      .swagger-ui .btn-clear {
+        background: #F8FAFB;
+        border: 1px solid #B0C4DE;
+        color: #6D8196;
+      }
+
+      .swagger-ui .btn-clear:hover {
+        background: #e8ecf0;
+      }
+
+      /* Tag groups */
+      .swagger-ui .opblock-tag {
+        border-bottom: 1px solid #B0C4DE;
+        color: #5A5A5A;
+      }
+
+      /* Info section */
+      .swagger-ui .info {
+        margin: 30px 0;
+      }
+
+      .swagger-ui .info .description h1,
+      .swagger-ui .info .description h2,
+      .swagger-ui .info .description h3 {
+        margin: 20px 0 10px;
+        color: #5A5A5A;
+        font-weight: 600;
+      }
+
+      .swagger-ui .info .description p,
+      .swagger-ui .info .description li {
+        color: #6D8196;
+        line-height: 1.6;
+        margin-bottom: 8px;
+      }
+
+      .swagger-ui .info .description code {
+        background: #F8FAFB;
+        border: 1px solid #B0C4DE;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Monaco', 'Courier', monospace;
+        font-size: 0.9em;
+        color: #01796F;
+      }
+
+      .swagger-ui .info .description pre {
+        background: #F8FAFB;
+        border: 1px solid #B0C4DE;
+        color: #5A5A5A;
+        padding: 12px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-family: 'Monaco', 'Courier', monospace;
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
+
+      /* Spec URL input */
+      .topbar-wrapper input[type="text"] {
+        border-radius: 4px;
+        border: 1px solid #B0C4DE;
+        padding: 8px 12px;
+        font-family: 'Monaco', 'Courier', monospace;
+        font-size: 0.9rem;
+        background: #fff;
+        color: #5A5A5A;
+      }
+
+      /* ── Responsive ──────────────────────────────────────────────────── */
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header-version {
+          margin-left: 0;
+          text-align: left;
+          margin-top: 10px;
+        }
+
+        .swagger-ui .opblock-summary-path {
+          font-size: 0.82rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="custom-header">
+      <div class="header-content">
+        <div class="header-icon">⚡</div>
+        <div class="header-text">
+          <h1>ForteCommerce API</h1>
+          <p>Async checkout · campaign-driven promotions · role-based access</p>
+        </div>
+        <div class="header-version">
+          <span>Version</span>
+          <strong>1.0.0</strong>
+        </div>
+      </div>
+    </div>
+
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+    <script>
+      window.onload = function() {
+        const ui = SwaggerUIBundle({
+          url: "./openapi.yaml",
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          plugins: [
+            SwaggerUIBundle.plugins.DownloadUrl
+          ],
+          layout: "StandaloneLayout",
+          persistAuthorization: true,
+          displayRequestDuration: true,
+          tryItOutEnabled: false,
+          defaultModelsExpandDepth: 2,
+          defaultModelExpandDepth: 3
+        });
+        window.ui = ui;
+      };
+    </script>
+  </body>
+</html>

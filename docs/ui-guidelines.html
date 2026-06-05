@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForteCommerce — UI Guidelines</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --color-steel: #6D8196;
+      --color-mist: #B0C4DE;
+      --color-teal: #01796F;
+      --color-teal-hover: #015f58;
+      --color-graphite: #5A5A5A;
+      --color-surface: #F8FAFB;
+      --color-white: #FFFFFF;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --shadow-card: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-modal: 0 10px 40px rgba(0,0,0,.12);
+      --font: 'Inter', system-ui, sans-serif;
+    }
+
+    body { font-family: var(--font); background: var(--color-surface); color: var(--color-graphite); line-height: 1.6; padding: 3rem 2rem; max-width: 960px; margin: 0 auto; }
+
+    h1 { font-size: 2rem; font-weight: 700; color: #1a1a1a; margin-bottom: .25rem; }
+    h2 { font-size: 1.25rem; font-weight: 600; color: #1a1a1a; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--color-mist); padding-bottom: .5rem; }
+    h3 { font-size: .875rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--color-steel); margin: 1.5rem 0 .75rem; }
+    p { font-size: .9375rem; color: var(--color-graphite); margin-bottom: .75rem; }
+    .subtitle { color: var(--color-steel); font-size: 1rem; margin-bottom: 3rem; }
+
+    .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+    .swatch { border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); }
+    .swatch-color { height: 88px; }
+    .swatch-info { background: var(--color-white); padding: .625rem .75rem; }
+    .swatch-name { font-size: .8125rem; font-weight: 600; color: #1a1a1a; }
+    .swatch-hex  { font-size: .75rem; color: var(--color-steel); font-family: monospace; }
+    .swatch-role { font-size: .6875rem; color: var(--color-steel); margin-top: .125rem; }
+
+    .type-row { display: flex; align-items: baseline; gap: 1.5rem; padding: .75rem 0; border-bottom: 1px solid var(--color-mist); }
+    .type-label { width: 100px; font-size: .75rem; font-family: monospace; color: var(--color-steel); flex-shrink: 0; }
+    .type-sample { color: #1a1a1a; }
+
+    .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 1rem; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-md); font-size: .9375rem; font-weight: 500; cursor: pointer; transition: background .15s, opacity .15s; border: none; padding: .625rem 1.25rem; font-family: var(--font); }
+    .btn-primary { background: var(--color-teal); color: #fff; }
+    .btn-primary:hover { background: var(--color-teal-hover); }
+    .btn-secondary { background: transparent; color: var(--color-teal); border: 1.5px solid var(--color-teal); }
+    .btn-secondary:hover { background: rgba(1,121,111,.07); }
+    .btn-ghost { background: transparent; color: var(--color-steel); }
+    .btn-ghost:hover { background: var(--color-mist); color: #1a1a1a; }
+    .btn-danger { background: #c0392b; color: #fff; }
+    .btn-sm { padding: .375rem .875rem; font-size: .875rem; }
+    .btn-lg { padding: .875rem 2rem; font-size: 1rem; }
+    .btn-stack { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+
+    .badge { display: inline-flex; align-items: center; gap: .375rem; padding: .25rem .625rem; border-radius: 999px; font-size: .75rem; font-weight: 600; }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .badge-pending  { background: #FFF3CD; color: #856404; }
+    .badge-completed, .badge-paid { background: #D1ECE4; color: #0a5e45; }
+    .badge-expired, .badge-failed { background: #F8D7DA; color: #842029; }
+    .badge-cancelled { background: #E2E3E5; color: #41464b; }
+
+    .input { width: 100%; padding: .625rem .875rem; border: 1.5px solid var(--color-mist); border-radius: var(--radius-md); font-size: .9375rem; color: #1a1a1a; background: var(--color-white); transition: border-color .15s, box-shadow .15s; outline: none; font-family: inherit; }
+    .input:focus { border-color: var(--color-teal); box-shadow: 0 0 0 3px rgba(1,121,111,.15); }
+    .input-label { font-size: .875rem; font-weight: 500; color: #1a1a1a; margin-bottom: .375rem; display: block; }
+    .input-hint { font-size: .8125rem; color: var(--color-steel); margin-top: .375rem; }
+
+    .product-card { background: var(--color-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); overflow: hidden; }
+    .product-img  { height: 120px; background: linear-gradient(135deg, var(--color-mist) 0%, var(--color-steel) 100%); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2rem; }
+    .product-body { padding: 1rem; }
+    .product-sku  { font-size: .75rem; font-family: monospace; color: var(--color-steel); }
+    .product-name { font-size: .9375rem; font-weight: 600; color: #1a1a1a; margin: .25rem 0; }
+    .product-price { font-size: 1.125rem; font-weight: 700; color: var(--color-teal); }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; margin-top: .875rem; }
+
+    .order-row { display: flex; align-items: center; justify-content: space-between; padding: .875rem 1rem; background: var(--color-white); border-radius: var(--radius-md); box-shadow: var(--shadow-card); margin-bottom: .5rem; }
+    .order-id { font-size: .8125rem; font-family: monospace; color: var(--color-steel); }
+    .order-total { font-weight: 600; color: #1a1a1a; }
+
+    .space-row { display: flex; align-items: center; gap: 1rem; margin-bottom: .5rem; }
+    .space-bar { background: var(--color-teal); height: 12px; border-radius: 3px; opacity: .75; }
+    .space-label { font-size: .8125rem; font-family: monospace; color: var(--color-steel); width: 80px; }
+
+    .logo-section { display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start; margin-top: 1rem; }
+    .logo-variant { display: flex; flex-direction: column; align-items: center; gap: .75rem; }
+    .logo-bg { display: flex; align-items: center; justify-content: center; border-radius: var(--radius-lg); padding: 2rem; }
+    .logo-bg-white { background: var(--color-white); box-shadow: var(--shadow-card); }
+    .logo-bg-dark  { background: #1a1a1a; }
+    .logo-bg-teal  { background: var(--color-teal); }
+    .logo-bg-surface { background: var(--color-surface); box-shadow: var(--shadow-card); }
+    .logo-bg img { width: 56px; height: 56px; object-fit: contain; }
+    .logo-bg-dark img, .logo-bg-teal img { filter: invert(1); }
+    .logo-label { font-size: .75rem; font-family: monospace; color: var(--color-steel); }
+    .logo-rule { font-size: .875rem; color: var(--color-graphite); }
+
+    code { background: #f0f0f0; padding: 0.125rem 0.375rem; border-radius: 3px; font-family: monospace; font-size: 0.875em; }
+
+    ul { padding-left: 1.25rem; display: grid; gap: 0.5rem; font-size: 0.9375rem; }
+  </style>
+</head>
+<body>
+
+  <h1>ForteCommerce</h1>
+  <p class="subtitle">UI Guidelines — Mountain Mist palette · Light Luxury direction</p>
+
+  <h2>Logo</h2>
+  <p>The FC mark is a flowing <strong>f→c</strong> lettermark. The <em>f</em> uses an infinity-loop stroke that flows directly into the open <em>c</em>. Never stretch, recolor, or add drop-shadows.</p>
+  <div class="logo-section">
+    <div class="logo-variant">
+      <div class="logo-bg logo-bg-white"><img src="../frontend/public/fc-logo.png" alt="ForteCommerce logo" /></div>
+      <span class="logo-label">On white</span>
+    </div>
+    <div class="logo-variant">
+      <div class="logo-bg logo-bg-surface"><img src="../frontend/public/fc-logo.png" alt="ForteCommerce logo" /></div>
+      <span class="logo-label">On surface</span>
+    </div>
+    <div class="logo-variant">
+      <div class="logo-bg logo-bg-dark"><img src="../frontend/public/fc-logo.png" alt="ForteCommerce logo" /></div>
+      <span class="logo-label">On dark (inverted)</span>
+    </div>
+    <div class="logo-variant">
+      <div class="logo-bg logo-bg-teal"><img src="../frontend/public/fc-logo.png" alt="ForteCommerce logo" /></div>
+      <span class="logo-label">On teal (inverted)</span>
+    </div>
+  </div>
+  <h3>Logo Usage Rules</h3>
+  <ul style="margin-top:.5rem">
+    <li>Minimum size: 24px height — below this the stroke detail is lost.</li>
+    <li>Maintain clear space equal to the logo height on all sides.</li>
+    <li>On light backgrounds: use original black mark.</li>
+    <li>On dark or teal backgrounds: use white (CSS <code>filter: invert(1)</code> or white SVG variant).</li>
+    <li>Never add outline, glow, or drop-shadow to the mark itself.</li>
+  </ul>
+
+  <h2>Color Palette</h2>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-color" style="background:#6D8196"></div><div class="swatch-info"><div class="swatch-name">Steel</div><div class="swatch-hex">#6D8196</div><div class="swatch-role">Borders, muted text</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#B0C4DE"></div><div class="swatch-info"><div class="swatch-name">Mist</div><div class="swatch-hex">#B0C4DE</div><div class="swatch-role">Surface tints, dividers</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#01796F"></div><div class="swatch-info" style="background:#01796F"><div class="swatch-name" style="color:#fff">Teal</div><div class="swatch-hex" style="color:rgba(255,255,255,.8)">#01796F</div><div class="swatch-role" style="color:rgba(255,255,255,.7)">Primary CTA, active</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#5A5A5A"></div><div class="swatch-info"><div class="swatch-name">Graphite</div><div class="swatch-hex">#5A5A5A</div><div class="swatch-role">Body text, labels</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F8FAFB; border:1px solid #e8edf0"></div><div class="swatch-info"><div class="swatch-name">Surface</div><div class="swatch-hex">#F8FAFB</div><div class="swatch-role">Page background</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#FFFFFF; border:1px solid #e8edf0"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-hex">#FFFFFF</div><div class="swatch-role">Cards, modals</div></div></div>
+  </div>
+
+  <h2>Typography</h2>
+  <p>Font family: <strong>Inter</strong> (system-ui fallback). Two weights: 400 and 600/700.</p>
+  <div class="type-row"><span class="type-label">4xl / 2.25rem</span><span class="type-sample" style="font-size:2.25rem;font-weight:700;line-height:1.2">Page Heading</span></div>
+  <div class="type-row"><span class="type-label">2xl / 1.5rem</span><span class="type-sample" style="font-size:1.5rem;font-weight:600">Section Title</span></div>
+  <div class="type-row"><span class="type-label">xl / 1.25rem</span><span class="type-sample" style="font-size:1.25rem;font-weight:600">Card Heading</span></div>
+  <div class="type-row"><span class="type-label">lg / 1.125rem</span><span class="type-sample" style="font-size:1.125rem">Large body text</span></div>
+  <div class="type-row"><span class="type-label">base / 1rem</span><span class="type-sample" style="font-size:1rem">Default body text and UI labels</span></div>
+  <div class="type-row"><span class="type-label">sm / .875rem</span><span class="type-sample" style="font-size:.875rem">Secondary text, captions, hints</span></div>
+  <div class="type-row"><span class="type-label">xs / .75rem</span><span class="type-sample" style="font-size:.75rem;color:#6D8196">Metadata, badges, timestamps</span></div>
+
+  <h2>Buttons</h2>
+  <h3>Variants</h3>
+  <div class="btn-stack">
+    <button class="btn btn-primary">Add to Cart</button>
+    <button class="btn btn-secondary">View Details</button>
+    <button class="btn btn-ghost">Cancel</button>
+    <button class="btn btn-danger">Cancel Order</button>
+  </div>
+  <h3>Sizes</h3>
+  <div class="btn-stack">
+    <button class="btn btn-primary btn-sm">Small</button>
+    <button class="btn btn-primary">Default</button>
+    <button class="btn btn-primary btn-lg">Large — Confirm Order</button>
+  </div>
+
+  <h2>Status Badges</h2>
+  <div class="btn-stack" style="margin-top:.5rem">
+    <span class="badge badge-pending"><span class="badge-dot"></span>Pending</span>
+    <span class="badge badge-completed"><span class="badge-dot"></span>Completed</span>
+    <span class="badge badge-paid"><span class="badge-dot"></span>Paid</span>
+    <span class="badge badge-expired"><span class="badge-dot"></span>Expired</span>
+    <span class="badge badge-failed"><span class="badge-dot"></span>Failed</span>
+    <span class="badge badge-cancelled"><span class="badge-dot"></span>Cancelled</span>
+  </div>
+
+  <h2>Form Inputs</h2>
+  <div class="comp-grid">
+    <div><label class="input-label">Username</label><input class="input" type="text" placeholder="your_username" /><span class="input-hint">3–50 characters</span></div>
+    <div><label class="input-label">Password</label><input class="input" type="password" placeholder="••••••••" /></div>
+  </div>
+
+  <h2>Product Card</h2>
+  <div class="comp-grid">
+    <div class="product-card"><div class="product-img">💻</div><div class="product-body"><div class="product-sku">43N23P</div><div class="product-name">MacBook Pro</div><div class="product-price">$5,399.99</div><div class="product-footer"><span style="font-size:.8125rem;color:#6D8196">5 available</span><button class="btn btn-primary btn-sm">Add</button></div></div></div>
+    <div class="product-card"><div class="product-img">🔊</div><div class="product-body"><div class="product-sku">A304SD</div><div class="product-name">Alexa Speaker</div><div class="product-price">$109.50</div><div class="product-footer"><span style="font-size:.8125rem;color:#c0392b;font-weight:600">Low stock · 2</span><button class="btn btn-primary btn-sm">Add</button></div></div></div>
+    <div class="product-card" style="opacity:.7"><div class="product-img" style="opacity:.5">📦</div><div class="product-body"><div class="product-sku">234234</div><div class="product-name">Raspberry Pi B</div><div class="product-price" style="color:#6D8196">$30.00</div><div class="product-footer"><span style="font-size:.8125rem;color:#c0392b;font-weight:600">Out of stock</span><button class="btn btn-ghost btn-sm" disabled style="opacity:.4;cursor:not-allowed">Add</button></div></div></div>
+  </div>
+
+  <h2>Order List Row</h2>
+  <div style="margin-top:.5rem">
+    <div class="order-row"><div><div class="order-id">#a1b2c3d4</div><div style="font-size:.875rem;margin-top:.25rem">MacBook Pro × 1</div></div><div style="display:flex;align-items:center;gap:1rem"><span style="font-weight:600;color:#1a1a1a">$5,399.99</span><span class="badge badge-paid"><span class="badge-dot"></span>Paid</span></div></div>
+    <div class="order-row"><div><div class="order-id">#e5f6a7b8</div><div style="font-size:.875rem;margin-top:.25rem">Alexa Speaker × 3</div></div><div style="display:flex;align-items:center;gap:1rem"><span style="font-weight:600;color:#1a1a1a">$295.65</span><span class="badge badge-pending"><span class="badge-dot"></span>Pending</span></div></div>
+  </div>
+
+  <h2>Spacing Scale</h2>
+  <div style="margin-top:.75rem">
+    <div class="space-row"><span class="space-label">4px / 1</span><div class="space-bar" style="width:4px"></div></div>
+    <div class="space-row"><span class="space-label">8px / 2</span><div class="space-bar" style="width:8px"></div></div>
+    <div class="space-row"><span class="space-label">12px / 3</span><div class="space-bar" style="width:12px"></div></div>
+    <div class="space-row"><span class="space-label">16px / 4</span><div class="space-bar" style="width:16px"></div></div>
+    <div class="space-row"><span class="space-label">24px / 6</span><div class="space-bar" style="width:24px"></div></div>
+    <div class="space-row"><span class="space-label">32px / 8</span><div class="space-bar" style="width:32px"></div></div>
+    <div class="space-row"><span class="space-label">48px / 12</span><div class="space-bar" style="width:48px"></div></div>
+  </div>
+
+  <h2>Border Radius</h2>
+  <div class="btn-stack" style="margin-top:.5rem">
+    <div style="width:60px;height:40px;background:var(--color-mist);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--color-steel)">4px</div>
+    <div style="width:60px;height:40px;background:var(--color-mist);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--color-steel)">8px</div>
+    <div style="width:60px;height:40px;background:var(--color-mist);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--color-steel)">12px</div>
+    <div style="width:60px;height:40px;background:var(--color-mist);border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:var(--color-steel)">pill</div>
+  </div>
+
+  <h2>Design Rules</h2>
+  <ul>
+    <li>Teal (<code>#01796F</code>) is the <strong>only</strong> action color — no secondary accents.</li>
+    <li>Animate <code>transform</code> and <code>opacity</code> only — never layout properties.</li>
+    <li>Every interactive element needs a <code>:focus-visible</code> ring in teal.</li>
+    <li>Cards: white bg + shadow-card. Page: surface (#F8FAFB).</li>
+    <li>No decorative gradients — gradient only used inside product image placeholder areas.</li>
+    <li>Max two font weights: 400 (regular) and 600/700 (semibold/bold).</li>
+    <li>Out-of-stock: product remains visible, button disabled + opacity 40%, price in steel.</li>
+    <li>Status badges use colored backgrounds, not just colored text (accessibility).</li>
+  </ul>
+
+</body>
+</html>
