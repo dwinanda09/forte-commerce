@@ -3,12 +3,17 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>ForteCommerce API Documentation</title>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css">
     <style>
       /* Force light mode — prevent OS dark-mode from bleeding into Swagger UI */
-      :root {
+      :root, html {
         color-scheme: light;
+      }
+
+      html {
+        background: #F8FAFB;
       }
 
       * {
@@ -198,13 +203,51 @@
         color: #5A5A5A;
       }
 
-      /* Models / Schemas */
-      .swagger-ui .model-box,
-      .swagger-ui section.models,
+      /* Models / Schemas — section wrapper */
+      .swagger-ui section.models {
+        background: #F8FAFB;
+        border: 1px solid #B0C4DE;
+        border-radius: 6px;
+        margin: 20px;
+      }
+
+      .swagger-ui section.models h4 {
+        color: #3b4151 !important;
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      /* Each schema row container */
       .swagger-ui section.models .model-container {
-        background: #fff;
-        border-color: #B0C4DE;
-        color: #5A5A5A;
+        background: #fff !important;
+        border: 1px solid #d0dae5 !important;
+        border-radius: 4px;
+        margin: 8px 12px !important;
+      }
+
+      /* Schema name badge/chip — the white-on-white culprit */
+      .swagger-ui section.models .model-container h4,
+      .swagger-ui section.models .model-container h4 span,
+      .swagger-ui section.models .model-box h4 span,
+      .swagger-ui .model-title,
+      .swagger-ui .model-title span,
+      .swagger-ui .model-title__text {
+        color: #3b4151 !important;
+        font-weight: 600;
+      }
+
+      /* Expand arrow / chevron */
+      .swagger-ui section.models .model-container span svg,
+      .swagger-ui section.models svg {
+        fill: #3b4151 !important;
+      }
+
+      .swagger-ui .model-box {
+        background: #fff !important;
+        border: 1px solid #B0C4DE;
+        border-radius: 4px;
+        padding: 12px;
+        color: #3b4151 !important;
       }
 
       .swagger-ui .model {
@@ -213,24 +256,28 @@
         border-radius: 4px;
         padding: 12px;
         margin: 6px 0;
-        color: #5A5A5A;
+        color: #3b4151 !important;
       }
 
-      .swagger-ui .model-box {
-        background: #fff;
-        border: 1px solid #B0C4DE;
-        border-radius: 4px;
-        padding: 12px;
-        color: #5A5A5A;
+      /* All text inside model/schema blocks */
+      .swagger-ui .model *,
+      .swagger-ui .model-box *,
+      .swagger-ui section.models * {
+        color: #3b4151;
       }
 
-      .swagger-ui section.models .model-box {
-        background: #fff;
+      /* Property names and types */
+      .swagger-ui .model span.prop-name {
+        color: #3b4151 !important;
+        font-weight: 600;
       }
 
-      .swagger-ui section.models h4,
-      .swagger-ui .model-title {
-        color: #5A5A5A;
+      .swagger-ui .model span.prop-type {
+        color: #01796F !important;
+      }
+
+      .swagger-ui .model span.prop-format {
+        color: #6D8196 !important;
       }
 
       /* Tabs */
