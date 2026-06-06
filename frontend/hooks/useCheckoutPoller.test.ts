@@ -136,8 +136,8 @@ describe('useCheckoutPoller', () => {
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
-      const configArg = vi.mocked(useSWR).mock.calls[0][2]
-      const refreshInterval = configArg.refreshInterval
+      const configArg = vi.mocked(useSWR).mock.calls[0]![2]!
+      const refreshInterval = configArg.refreshInterval as (data: unknown) => number
 
       expect(refreshInterval(undefined)).toBe(2000)
     })
@@ -161,8 +161,8 @@ describe('useCheckoutPoller', () => {
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
-      const configArg = vi.mocked(useSWR).mock.calls[0][2]
-      const refreshInterval = configArg.refreshInterval
+      const configArg = vi.mocked(useSWR).mock.calls[0]![2]!
+      const refreshInterval = configArg.refreshInterval as (data: unknown) => number
 
       expect(refreshInterval(mockSession)).toBe(2000)
     })
@@ -191,8 +191,8 @@ describe('useCheckoutPoller', () => {
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
-      const configArg = vi.mocked(useSWR).mock.calls[0][2]
-      const refreshInterval = configArg.refreshInterval
+      const configArg = vi.mocked(useSWR).mock.calls[0]![2]!
+      const refreshInterval = configArg.refreshInterval as (data: unknown) => number
 
       expect(refreshInterval(completedSession)).toBe(0)
     })
@@ -221,8 +221,8 @@ describe('useCheckoutPoller', () => {
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
-      const configArg = vi.mocked(useSWR).mock.calls[0][2]
-      const refreshInterval = configArg.refreshInterval
+      const configArg = vi.mocked(useSWR).mock.calls[0]![2]!
+      const refreshInterval = configArg.refreshInterval as (data: unknown) => number
 
       expect(refreshInterval(expiredSession)).toBe(0)
     })
@@ -251,8 +251,8 @@ describe('useCheckoutPoller', () => {
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
-      const configArg = vi.mocked(useSWR).mock.calls[0][2]
-      const refreshInterval = configArg.refreshInterval
+      const configArg = vi.mocked(useSWR).mock.calls[0]![2]!
+      const refreshInterval = configArg.refreshInterval as (data: unknown) => number
 
       expect(refreshInterval(failedSession)).toBe(0)
     })
@@ -268,7 +268,7 @@ describe('useCheckoutPoller', () => {
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
-      const configArg = vi.mocked(useSWR).mock.calls[0][2]
+      const configArg = vi.mocked(useSWR).mock.calls[0]![2]!
       expect(configArg.revalidateOnFocus).toBe(false)
     })
 
@@ -281,7 +281,7 @@ describe('useCheckoutPoller', () => {
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
-      const configArg = vi.mocked(useSWR).mock.calls[0][2]
+      const configArg = vi.mocked(useSWR).mock.calls[0]![2]!
       expect(configArg.revalidateOnReconnect).toBe(false)
     })
   })
@@ -289,16 +289,16 @@ describe('useCheckoutPoller', () => {
   describe('fetcher function', () => {
     it('calls api.getCheckout with correct id', () => {
       const mockApiResponse = { data: mockSession }
-      vi.mocked(api.getCheckout).mockResolvedValue(mockApiResponse)
+      vi.mocked(api.getCheckout).mockResolvedValue(mockApiResponse as any)
 
       const mockUseSWR = vi.fn((key, fetcher) => {
         if (key) {
           fetcher(key)
         }
-        return { data: undefined, isLoading: false, error: undefined }
+        return { data: undefined, isLoading: false, error: undefined } as any
       })
 
-      vi.mocked(useSWR).mockImplementation(mockUseSWR)
+      vi.mocked(useSWR).mockImplementation(mockUseSWR as any)
 
       renderHook(() => useCheckoutPoller('chk-123'))
 
@@ -307,7 +307,7 @@ describe('useCheckoutPoller', () => {
 
     it('returns data property from api response', async () => {
       const mockApiResponse = { data: mockSession }
-      vi.mocked(api.getCheckout).mockResolvedValue(mockApiResponse)
+      vi.mocked(api.getCheckout).mockResolvedValue(mockApiResponse as any)
 
       let fetcherResult: any
       const mockUseSWR = vi.fn((key, fetcher) => {
@@ -316,10 +316,10 @@ describe('useCheckoutPoller', () => {
             fetcherResult = result
           })
         }
-        return { data: undefined, isLoading: false, error: undefined }
+        return { data: undefined, isLoading: false, error: undefined } as any
       })
 
-      vi.mocked(useSWR).mockImplementation(mockUseSWR)
+      vi.mocked(useSWR).mockImplementation(mockUseSWR as any)
 
       renderHook(() => useCheckoutPoller('chk-123'))
 

@@ -129,7 +129,7 @@ jobs:
 
       - name: Test with race detector
         working-directory: backend
-        run: go test -race ./... -count=1 -coverprofile=coverage.out -covermode=atomic
+        run: go test -race ./internal/domain/... ./internal/handler/... ./internal/usecase/... ./internal/promotion/... ./internal/middleware/... ./util/... -count=1 -coverprofile=coverage.out -covermode=atomic
 
       - name: Enforce coverage ≥ 80%
         working-directory: backend

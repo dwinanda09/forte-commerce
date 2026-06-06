@@ -41,6 +41,41 @@ func sampleProduct() *domain.Product {
 	}
 }
 
+// ── List ──────────────────────────────────────────────────────────────────────
+
+func TestProductHandler_List_OK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	products := []domain.Product{*sampleProduct(), *sampleProduct()}
+	repo := mocks.NewMockProductRepository(ctrl)
+	repo.EXPECT().FindAll(gomock.Any()).Return(products, nil)
+
+	h := NewProductHandler(repo)
+	c, rec := newProductEcho(http.MethodGet, "/products", nil)
+
+	require.NoError(t, h.List(c))
+	assert.Equal(t, http.StatusOK, rec.Code)
+
+	var resp map[string]interface{}
+	require.NoError(t, json.Unmarshal(rec.Body.Bytes(), &resp))
+	assert.True(t, resp["success"].(bool))
+}
+
+func TestProductHandler_List_RepoError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	repo := mocks.NewMockProductRepository(ctrl)
+	repo.EXPECT().FindAll(gomock.Any()).Return(nil, errors.New("db error"))
+
+	h := NewProductHandler(repo)
+	c, rec := newProductEcho(http.MethodGet, "/products", nil)
+
+	require.NoError(t, h.List(c))
+	assert.Equal(t, http.StatusInternalServerError, rec.Code)
+}
+
 // ── Create ────────────────────────────────────────────────────────────────────
 
 func TestProductHandler_Create_OK(t *testing.T) {

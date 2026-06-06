@@ -17,28 +17,28 @@ describe('ProductCard', () => {
 
   it('renders product sku', () => {
     const mockOnAdd = vi.fn()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('SKU-001')).toBeInTheDocument()
   })
 
   it('renders product name', () => {
     const mockOnAdd = vi.fn()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('Test Product')).toBeInTheDocument()
   })
 
   it('renders product price with 2 decimals', () => {
     const mockOnAdd = vi.fn()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('$99.99')).toBeInTheDocument()
   })
 
   it('renders available quantity', () => {
     const mockOnAdd = vi.fn()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('8 in stock')).toBeInTheDocument()
   })
@@ -46,7 +46,7 @@ describe('ProductCard', () => {
   it('shows out of stock message when available qty is 0', () => {
     const mockOnAdd = vi.fn()
     const outOfStockProduct = { ...mockProduct, available_qty: 0 }
-    render(<ProductCard product={outOfStockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={outOfStockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('Out of stock')).toBeInTheDocument()
   })
@@ -54,7 +54,7 @@ describe('ProductCard', () => {
   it('disables add button when out of stock', () => {
     const mockOnAdd = vi.fn()
     const outOfStockProduct = { ...mockProduct, available_qty: 0 }
-    render(<ProductCard product={outOfStockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={outOfStockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const button = screen.getByRole('button', { name: 'Out of Stock' })
     expect(button).toBeDisabled()
@@ -62,7 +62,7 @@ describe('ProductCard', () => {
 
   it('shows quantity selector when in stock', () => {
     const mockOnAdd = vi.fn()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('1')).toBeInTheDocument()
   })
@@ -70,7 +70,7 @@ describe('ProductCard', () => {
   it('hides quantity selector when out of stock', () => {
     const mockOnAdd = vi.fn()
     const outOfStockProduct = { ...mockProduct, available_qty: 0 }
-    render(<ProductCard product={outOfStockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={outOfStockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const qtyDisplayElements = screen.queryAllByText(/^\d+$/)
     expect(qtyDisplayElements).toHaveLength(0)
@@ -79,7 +79,7 @@ describe('ProductCard', () => {
   it('increases quantity when plus button is clicked', async () => {
     const mockOnAdd = vi.fn()
     const user = userEvent.setup()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const plusButton = screen.getAllByRole('button').find((btn) => btn.textContent === '+')
     await user.click(plusButton!)
@@ -90,7 +90,7 @@ describe('ProductCard', () => {
   it('decreases quantity when minus button is clicked', async () => {
     const mockOnAdd = vi.fn()
     const user = userEvent.setup()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const plusButton = screen.getAllByRole('button').find((btn) => btn.textContent === '+')
     await user.click(plusButton!)
@@ -105,7 +105,7 @@ describe('ProductCard', () => {
   it('does not decrease qty below 1', async () => {
     const mockOnAdd = vi.fn()
     const user = userEvent.setup()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const minusButton = screen.getAllByRole('button').find((btn) => btn.textContent === '−')
     await user.click(minusButton!)
@@ -117,7 +117,7 @@ describe('ProductCard', () => {
     const mockOnAdd = vi.fn()
     const user = userEvent.setup()
     const limitedProduct = { ...mockProduct, available_qty: 2 }
-    render(<ProductCard product={limitedProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={limitedProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const plusButton = screen.getAllByRole('button').find((btn) => btn.textContent === '+')
 
@@ -131,7 +131,7 @@ describe('ProductCard', () => {
   it('calls onAddToCart with product and qty when add button is clicked', async () => {
     const mockOnAdd = vi.fn()
     const user = userEvent.setup()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const addButton = screen.getByRole('button', { name: 'Add to Cart' })
     await user.click(addButton)
@@ -142,7 +142,7 @@ describe('ProductCard', () => {
   it('resets quantity to 1 after adding to cart', async () => {
     const mockOnAdd = vi.fn()
     const user = userEvent.setup()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const plusButton = screen.getAllByRole('button').find((btn) => btn.textContent === '+')
     await user.click(plusButton!)
@@ -157,7 +157,7 @@ describe('ProductCard', () => {
   it('handles multiple add to cart calls with different quantities', async () => {
     const mockOnAdd = vi.fn()
     const user = userEvent.setup()
-    render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const plusButton = screen.getAllByRole('button').find((btn) => btn.textContent === '+')
     const addButton = screen.getByRole('button', { name: 'Add to Cart' })
@@ -178,7 +178,7 @@ describe('ProductCard', () => {
   it('renders with high available quantity', () => {
     const mockOnAdd = vi.fn()
     const highStockProduct = { ...mockProduct, available_qty: 1000 }
-    render(<ProductCard product={highStockProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={highStockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('1000 in stock')).toBeInTheDocument()
   })
@@ -189,14 +189,14 @@ describe('ProductCard', () => {
       ...mockProduct,
       name: 'This is a very long product name that should be truncated in the UI to prevent layout issues',
     }
-    render(<ProductCard product={longNameProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={longNameProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText(longNameProduct.name)).toBeInTheDocument()
   })
 
   it('displays teal color for price when in stock', () => {
     const mockOnAdd = vi.fn()
-    const { container } = render(<ProductCard product={mockProduct} onAddToCart={mockOnAdd} />)
+    const { container } = render(<ProductCard product={mockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const priceElement = container.querySelector('.text-teal')
     expect(priceElement).toBeInTheDocument()
@@ -205,7 +205,7 @@ describe('ProductCard', () => {
   it('displays dimmed price when out of stock', () => {
     const mockOnAdd = vi.fn()
     const outOfStockProduct = { ...mockProduct, available_qty: 0 }
-    const { container } = render(<ProductCard product={outOfStockProduct} onAddToCart={mockOnAdd} />)
+    const { container } = render(<ProductCard product={outOfStockProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     const priceElement = container.querySelector('.opacity-40')
     expect(priceElement).toBeInTheDocument()
@@ -214,7 +214,7 @@ describe('ProductCard', () => {
   it('handles decimal prices correctly', () => {
     const mockOnAdd = vi.fn()
     const decimalPriceProduct = { ...mockProduct, price: 199.99 }
-    render(<ProductCard product={decimalPriceProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={decimalPriceProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('$199.99')).toBeInTheDocument()
   })
@@ -222,7 +222,7 @@ describe('ProductCard', () => {
   it('handles single unit available qty', () => {
     const mockOnAdd = vi.fn()
     const singleUnitProduct = { ...mockProduct, available_qty: 1 }
-    render(<ProductCard product={singleUnitProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={singleUnitProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('1 in stock')).toBeInTheDocument()
   })
@@ -230,7 +230,7 @@ describe('ProductCard', () => {
   it('correctly identifies out of stock with negative available qty edge case', () => {
     const mockOnAdd = vi.fn()
     const negativeProduct = { ...mockProduct, available_qty: -1 }
-    render(<ProductCard product={negativeProduct} onAddToCart={mockOnAdd} />)
+    render(<ProductCard product={negativeProduct} variant="buyer" onAddToCart={mockOnAdd} />)
 
     expect(screen.getByText('Out of stock')).toBeInTheDocument()
   })
