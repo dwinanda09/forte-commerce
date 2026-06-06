@@ -22,8 +22,8 @@ help:
 	@echo "  make test-coverage     Run tests with coverage report (requires ≥90%)"
 	@echo "  make build             Build backend binary"
 	@echo "  make clean             Clean build artifacts"
-	@echo "  make lint              Run go vet
-  make seed-reset        Reset inventory + clear orders/sessions to PDF-spec values"
+	@echo "  make lint              Run go vet"
+	@echo "  make seed-reset        Reset inventory + campaigns + clear orders/sessions to PDF-spec values"
 
 stop:
 	-docker compose down

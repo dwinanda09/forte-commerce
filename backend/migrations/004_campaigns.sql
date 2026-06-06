@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE campaigns (
     id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    name        VARCHAR(255) NOT NULL,
+    name        VARCHAR(255) NOT NULL UNIQUE,
     description TEXT         NOT NULL DEFAULT '',
     is_active   BOOLEAN      NOT NULL DEFAULT true,
     priority    INT          NOT NULL DEFAULT 0,
