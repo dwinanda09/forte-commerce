@@ -1,4 +1,4 @@
-.PHONY: help dev local stop docker-up docker-down compose-up compose-down migrate-up migrate-down migrate-status dev-backend dev-frontend test test-coverage build clean lint install-goose
+.PHONY: help dev local stop docker-up docker-down compose-up compose-down migrate-up migrate-down migrate-status dev-backend dev-frontend test test-coverage build clean lint install-goose seed-reset
 
 DB_URL ?= postgres://forte:forte123@localhost:14045/forte_commerce?sslmode=disable
 
@@ -22,7 +22,8 @@ help:
 	@echo "  make test-coverage     Run tests with coverage report (requires ≥90%)"
 	@echo "  make build             Build backend binary"
 	@echo "  make clean             Clean build artifacts"
-	@echo "  make lint              Run go vet"
+	@echo "  make lint              Run go vet
+  make seed-reset        Reset inventory + clear orders/sessions to PDF-spec values"
 
 stop:
 	-docker compose down
@@ -127,3 +128,12 @@ clean:
 
 lint:
 	cd backend && go vet ./...
+
+seed-reset:
+	@echo "==> Resetting inventory to PDF-spec values and clearing test data..."
+	psql "$(DB_URL)" -f backend/scripts/reset_test_data.sql
+	@echo "Done. Inventory restored:"
+	@echo "  120P90  Google Home     qty=10"
+	@echo "  43N23P  MacBook Pro     qty=5"
+	@echo "  A304SD  Alexa Speaker   qty=10"
+	@echo "  234234  Raspberry Pi B  qty=2"
